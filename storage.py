@@ -5,10 +5,9 @@ from models import Transaction
 
 
 # Пути к файлам с данными
-_timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 _base_dir = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(_base_dir, 'data')
-CSV_FILE = os.path.join(DATA_DIR, f'transactions_{_timestamp}.csv')
+CSV_FILE = os.path.join(DATA_DIR, f'transactions.csv')
 
 
 def ensure_data_dir():
@@ -16,7 +15,7 @@ def ensure_data_dir():
     if not os.path.exists(DATA_DIR):
         os.makedirs(DATA_DIR)
 
-def save_transaction(transactions):
+def save_transactions(transactions):
     '''Сохраняет транзакции'''
     if not transactions:
         return  # Ничего не делаем
