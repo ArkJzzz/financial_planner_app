@@ -2,14 +2,18 @@ import datetime
 
 
 class Transaction:
-    '''
-    Финансовая операция (поступление или расход денежных стредств)
-        amount: сумма
-        category: категогия (продукты, бензин, заработная плата и т.п.)
-        date: дата операции
-        description: описание
-        transaction_type: тип операции - "expense" (расходы) или "income" (поступления)
-    '''
+    """Класс, представляющий отдельную финансовую операцию.
+
+    Используется для учета поступлений (income) или расходов (expense)
+    денежных средств с валидацией даты и очисткой строковых данных.
+
+    Attributes:
+        amount (float): Сумма денежных средств.
+        category (str): Категория операции (например, продукты, бензин, зарплата).
+        date (datetime.datetime): Объект даты операции.
+        description (str): Дополнительное описание транзакции.
+        transaction_type (str): Тип операции ('expense' или 'income').
+    """
     def __init__(
             self,
             amount: float,
@@ -18,30 +22,34 @@ class Transaction:
             description: str = '',
             transaction_type: str = 'expense'
             ):
+        """Инициализирует объект транзакции.
 
-        if transaction_type not in ('expense', 'income'):
-            raise ValueError('Тип транзакции должен быть только "expense" или "income"')
+        Args:
+            amount (float): Сумма операции.
+            category (str): Категория операции. Строка очищается от пробелов.
+            date (str): Дата в строковом формате 'YYYY-MM-DD'.
+            description (str, optional): Описание операции. По умолчанию ''.
+            transaction_type (str, optional): Тип операции: 'expense' (расход) 
+                или 'income' (доход). По умолчанию 'expense'.
 
-        if amount <= 0:
-            raise ValueError('Сумма транзакции должна быть положительной')
-
+        Raises:
+            ValueError: Если формат даты `date` не соответствует 'YYYY-MM-DD'.
+        """
         self.amount = amount
         self.category = category.strip()
-        self.date = self._validate_date(date)
+        # Преобразование строки в объект datetime согласно формату
+        self.date = datetime.datetime.strptime(date, '%Y-%m-%d')
         self.description = description.strip()
         self.transaction_type = transaction_type.strip()
 
-    @staticmethod
-    def _validate_date(date_str: str) -> str:
-        '''Принимает дату в формате YYYY-MM-DD'''
-        try:
-            datetime.datetime.strptime(date_str, '%Y-%m-%d')
-            return date_str # Дата соответствует шаблону
-        except ValueError:
-            raise ValueError('Дата записывается в формате YYYY-MM-DD')
 
     def to_dict(self):
-        '''Возвращает транзакцию в виде словаря'''
+        """Возвращает данные транзакции в виде словаря.
+
+        Returns:
+            dict: Словарь, содержащий ключи 'amount', 'category', 'date', 
+                'description' и 'transaction_type'. 
+        """
         return {
             'amount': self.amount,
             'category': self.category,
