@@ -1,3 +1,4 @@
 tkinter
 pandas
 matplotlib
+pytest
