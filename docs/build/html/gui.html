@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html lang="ru" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>gui module &#8212; документация financial_planner_app </title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=372fde1a"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=cd1d70c9"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="main module" href="main.html" />
+    <link rel="prev" title="analysis module" href="analysis.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-gui">
+<span id="gui-module"></span><h1>gui module<a class="headerlink" href="#module-gui" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gui.</span></span><span class="sig-name descname"><span class="pre">FinancialPlannerApp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#FinancialPlannerApp"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.FinancialPlannerApp" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Управляющий класс графического интерфейса «Финансовый Планер».</p>
+<p>Класс инкапсулирует логику визуализации данных через Tkinter, обработку
+пользовательского ввода, хранение текущего состояния транзакций и вызов
+функций аналитического анализа (Pandas/Matplotlib).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.root">
+<span class="sig-name descname"><span class="pre">root</span></span><a class="headerlink" href="#gui.FinancialPlannerApp.root" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Главное окно приложения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tk.Tk</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.transactions">
+<span class="sig-name descname"><span class="pre">transactions</span></span><a class="headerlink" href="#gui.FinancialPlannerApp.transactions" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Список объектов транзакций,
+загруженных из хранилища.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="models.html#models.Transaction" title="models.Transaction">Transaction</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.amount_var">
+<span class="sig-name descname"><span class="pre">amount_var</span></span><a class="headerlink" href="#gui.FinancialPlannerApp.amount_var" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Буфер для ввода суммы операции.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tk.StringVar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.category_var">
+<span class="sig-name descname"><span class="pre">category_var</span></span><a class="headerlink" href="#gui.FinancialPlannerApp.category_var" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Буфер для ввода категории.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tk.StringVar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.date_var">
+<span class="sig-name descname"><span class="pre">date_var</span></span><a class="headerlink" href="#gui.FinancialPlannerApp.date_var" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Буфер для ввода даты (формат YYYY-MM-DD).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tk.StringVar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.desc_var">
+<span class="sig-name descname"><span class="pre">desc_var</span></span><a class="headerlink" href="#gui.FinancialPlannerApp.desc_var" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Буфер для ввода описания.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tk.StringVar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.type_var">
+<span class="sig-name descname"><span class="pre">type_var</span></span><a class="headerlink" href="#gui.FinancialPlannerApp.type_var" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Переключатель типа операции („expense“/“income“).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tk.StringVar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.tree">
+<span class="sig-name descname"><span class="pre">tree</span></span><a class="headerlink" href="#gui.FinancialPlannerApp.tree" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Виджет таблицы для отображения истории транзакций.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ttk.Treeview</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.add_transaction">
+<span class="sig-name descname"><span class="pre">add_transaction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#FinancialPlannerApp.add_transaction"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.FinancialPlannerApp.add_transaction" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Обрабатывает добавление новой транзакции через интерфейс.</p>
+<p>Метод выполняет последовательность действий:
+1. Извлекает значения из строковых переменных Tkinter (<cite>StringVar</cite>).
+2. Вызывает функции внешней валидации: <code class="xref py py-func docutils literal notranslate"><span class="pre">validate_amount()</span></code>,</p>
+<blockquote>
+<div><p><code class="xref py py-func docutils literal notranslate"><span class="pre">validate_category()</span></code> и <code class="xref py py-func docutils literal notranslate"><span class="pre">validate_date()</span></code>.</p>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>При успешной проверке создает объект <code class="xref py py-class docutils literal notranslate"><span class="pre">Transaction</span></code>.</p></li>
+<li><p>Инициирует сохранение в CSV-файл и обновляет локальный список.</p></li>
+<li><p>Перерисовывает таблицу в интерфейсе и очищает поля ввода.</p></li>
+</ol>
+<p>В случае любой ошибки валидации или записи процесс прерывается,
+и пользователю выводится модальное окно с описанием проблемы.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Перехватывает все исключения (ValueError, IOError и др.),
+    возникающие в процессе валидации или сохранения, и отображает
+    их через <cite>messagebox.showerror</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.cashflow_trends">
+<span class="sig-name descname"><span class="pre">cashflow_trends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#FinancialPlannerApp.cashflow_trends"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.FinancialPlannerApp.cashflow_trends" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Обработчик события: формирует и отображает график динамики денежных потоков.</p>
+<p>Метод преобразует текущую историю транзакций в формат временного ряда
+и визуализирует тренды доходов и расходов. Это позволяет пользователю
+проанализировать финансовую активность в хронологическом порядке.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.clear_input_fields">
+<span class="sig-name descname"><span class="pre">clear_input_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#FinancialPlannerApp.clear_input_fields"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.FinancialPlannerApp.clear_input_fields" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Сбрасывает значения в текстовых полях формы ввода.</p>
+<p>Метод очищает переменные <cite>amount_var</cite>, <cite>category_var</cite> и <cite>desc_var</cite>,
+что приводит к визуальному удалению текста из соответствующих
+виджетов <cite>ttk.Entry</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.create_widgets">
+<span class="sig-name descname"><span class="pre">create_widgets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#FinancialPlannerApp.create_widgets"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.FinancialPlannerApp.create_widgets" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Создает и размещает все элементы пользовательского интерфейса.</p>
+<p>Метод выполняет визуальную компоновку приложения, разделенную на три логических блока:
+1. Форма ввода (LabelFrame): сбор данных о сумме, категории, дате и описании.
+2. Таблица истории (Treeview): интерактивный список всех транзакций с прокруткой.
+3. Панель аналитики (LabelFrame): кнопки вызова графических отчетов.</p>
+<p>В процессе выполнения инициализируются связанные переменные Tkinter
+(<cite>amount_var</cite>, <cite>category_var</cite> и др.), необходимые для реактивного
+взаимодействия с пользователем.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Использует менеджеры геометрии <cite>pack</cite> для основных контейнеров
+и <cite>grid</cite> для элементов внутри форм ввода и аналитики.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.expense_dia">
+<span class="sig-name descname"><span class="pre">expense_dia</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#FinancialPlannerApp.expense_dia"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.FinancialPlannerApp.expense_dia" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Обработчик события: генерирует и отображает круговую диаграмму расходов.</p>
+<p>Метод подготавливает данные, конвертируя текущий список транзакций
+в формат DataFrame, и инициирует построение графика распределения
+расходов по категориям.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.income_dia">
+<span class="sig-name descname"><span class="pre">income_dia</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#FinancialPlannerApp.income_dia"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.FinancialPlannerApp.income_dia" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Обработчик события: генерирует и отображает круговую диаграмму доходов.</p>
+<p>Метод подготавливает данные, конвертируя текущий список транзакций
+в формат DataFrame, и инициирует построение графика распределения
+доходов по категориям.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.FinancialPlannerApp.refresh_transaction_table">
+<span class="sig-name descname"><span class="pre">refresh_transaction_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#FinancialPlannerApp.refresh_transaction_table"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.FinancialPlannerApp.refresh_transaction_table" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Синхронизирует виджет таблицы с актуальным списком транзакций.</p>
+<p>Метод полностью очищает текущие записи в графическом виджете <cite>Treeview</cite>
+и заново заполняет его данными из атрибута <cite>self.transactions</cite>.
+В процессе выполняется форматирование данных: преобразование типов
+в человекочитаемый вид (например, „income“ в „Доход“) и округление сумм.</p>
+<p>После обновления таблицы выполняется автоматическая прокрутка к
+последней (самой новой) записи.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">financial_planner_app</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Навигация</h3>
+<p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">financial_planner_app</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analysis.html">analysis module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">gui module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gui.FinancialPlannerApp"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.root"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.transactions"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.transactions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.amount_var"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.amount_var</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.category_var"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.category_var</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.date_var"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.date_var</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.desc_var"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.desc_var</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.type_var"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.type_var</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.tree"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.tree</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.add_transaction"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.add_transaction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.cashflow_trends"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.cashflow_trends()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.clear_input_fields"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.clear_input_fields()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.create_widgets"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.create_widgets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.expense_dia"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.expense_dia()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.income_dia"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.income_dia()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gui.FinancialPlannerApp.refresh_transaction_table"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.refresh_transaction_table()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html">storage module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">financial_planner_app</a><ul>
+      <li>Previous: <a href="analysis.html" title="предыдущая глава">analysis module</a></li>
+      <li>Next: <a href="main.html" title="следующая глава">main module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Zvezdin Andrey.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/gui.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html lang="ru" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>analysis &#8212; документация financial_planner_app </title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=cd1d70c9"></script>
+    <link rel="index" title="Алфавитный указатель" href="../genindex.html" />
+    <link rel="search" title="Поиск" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Исходный код analysis</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<div class="viewcode-block" id="transactions_to_df">
+<a class="viewcode-back" href="../analysis.html#analysis.transactions_to_df">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">transactions_to_df</span><span class="p">(</span><span class="n">transactions</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Преобразует список объектов транзакций в объект pandas DataFrame.</span>
+
+<span class="sd">    Функция собирает данные из объектов транзакций и выполняет постобработку:</span>
+<span class="sd">    преобразует строковые даты в объекты `datetime64`, что позволяет в дальнейшем</span>
+<span class="sd">    проводить временной анализ (группировку по месяцам, расчет трендов и т.д.).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        transactions (list[Transaction]): Список экземпляров класса :class:`Transaction`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame: Таблица данных с колонками, соответствующими полям транзакции.</span>
+<span class="sd">        Если список пуст, возвращается пустой DataFrame. Колонки результата:</span>
+<span class="sd">        &#39;amount&#39;, &#39;category&#39;, &#39;date&#39;, &#39;description&#39;, &#39;transaction_type&#39;.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Столбец &#39;date&#39; автоматически конвертируется в формат :obj:`pandas.Timestamp`</span>
+<span class="sd">        только в том случае, если DataFrame не пуст.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; transactions = [Transaction(100.0, &quot;Еда&quot;, &quot;2026-01-06&quot;)]</span>
+<span class="sd">        &gt;&gt;&gt; df = transactions_to_df(transactions)</span>
+<span class="sd">        &gt;&gt;&gt; print(df[&#39;date&#39;].dtype)</span>
+<span class="sd">        datetime64[ns]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">transactions</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="c1"># Приведение к формату datetime для корректной работы с временными рядами</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="group_by_category">
+<a class="viewcode-back" href="../analysis.html#analysis.group_by_category">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">group_by_category</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">transaction_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Группирует данные по категориям и вычисляет суммарный объем средств.</span>
+
+<span class="sd">    Функция фильтрует входной DataFrame по указанному типу транзакций (доход или расход)</span>
+<span class="sd">    и суммирует значения в столбце &#39;amount&#39; для каждой уникальной категории.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (pd.DataFrame): Таблица данных, содержащая столбцы &#39;transaction_type&#39;, </span>
+<span class="sd">            &#39;category&#39; и &#39;amount&#39;.</span>
+<span class="sd">        transaction_type (str): Тип операции для фильтрации (например, &#39;expense&#39; </span>
+<span class="sd">            или &#39;income&#39;).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.Series: Объект Series, где индексами являются названия категорий, </span>
+<span class="sd">        а значениями — общие суммы по каждой категории.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; # Получение суммы расходов по категориям</span>
+<span class="sd">        &gt;&gt;&gt; expenses_by_cat = group_by_category(df, &#39;expense&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(expenses_by_cat[&#39;Еда&#39;])</span>
+<span class="sd">        5000.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filtered</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;transaction_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">transaction_type</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">filtered</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">)[</span><span class="s2">&quot;amount&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="plot_pie_by_category">
+<a class="viewcode-back" href="../analysis.html#analysis.plot_pie_by_category">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_pie_by_category</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">transaction_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Строит круговую диаграмму распределения финансов по категориям.</span>
+
+<span class="sd">    Функция агрегирует данные для выбранного типа операций (доходы или расходы)</span>
+<span class="sd">    и визуализирует процентное соотношение каждой категории в общем объеме.</span>
+<span class="sd">    Если данные для указанного типа отсутствуют, график не строится.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (pd.DataFrame): Таблица данных, содержащая как минимум колонки </span>
+<span class="sd">            &#39;transaction_type&#39;, &#39;category&#39; и &#39;amount&#39;.</span>
+<span class="sd">        transaction_type (str): Тип операций для отображения: &#39;expense&#39; (расходы) </span>
+<span class="sd">            или &#39;income&#39; (доходы).</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        - Функция использует метод `plt.show()` для отображения графика, что </span>
+<span class="sd">          может блокировать выполнение кода в зависимости от настроек бэкенда Matplotlib.</span>
+<span class="sd">        - Для корректного отображения меток категорий на русском языке убедитесь, </span>
+<span class="sd">          что в Matplotlib настроены шрифты с поддержкой кириллицы.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None: Функция отображает интерактивное окно с графиком через `plt.show()`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">group_by_category</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">transaction_type</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Нет данных для </span><span class="si">{</span><span class="n">transaction_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Построение диаграммы с настройками размера и отображением процентов</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;pie&quot;</span><span class="p">,</span> 
+            <span class="n">autopct</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%1.1f%%</span><span class="s2">&quot;</span><span class="p">,</span> 
+            <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> 
+            <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">transaction_type</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2"> по категориям&quot;</span>
+        <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="c1"># Скрываем стандартную подпись оси Y (название Series)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="plot_income_expence_over_time">
+<a class="viewcode-back" href="../analysis.html#analysis.plot_income_expence_over_time">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_income_expence_over_time</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Визуализирует динамику доходов и расходов во времени.</span>
+
+<span class="sd">    Функция группирует транзакции по датам и типам, вычисляет ежедневные суммы</span>
+<span class="sd">    и строит линейный график. Позволяет наглядно сравнить притоки и оттоки</span>
+<span class="sd">    денежных средств на временной шкале.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (pd.DataFrame): Таблица данных. Должна содержать колонки &#39;date&#39;,</span>
+<span class="sd">            &#39;transaction_type&#39; и &#39;amount&#39;. Колонка &#39;date&#39; должна иметь</span>
+<span class="sd">            тип datetime64.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        - Если в определенную дату отсутствует один из типов операций (например, </span>
+<span class="sd">          только расходы), функция подставит 0 для корректного отображения графика.</span>
+<span class="sd">        - Для корректной работы функции рекомендуется предварительно обработать </span>
+<span class="sd">          DataFrame функцией :func:`transactions_to_df`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None: Функция отображает интерактивное окно с графиком через `plt.show()`.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        KeyError: Если в DataFrame отсутствуют необходимые колонки.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Нет данных для графика&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="c1"># Группировка по дате и типу, затем разворачивание типов в отдельные колонки</span>
+    <span class="n">df_grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="s2">&quot;transaction_type&quot;</span><span class="p">])[</span><span class="s2">&quot;amount&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Построение графика с маркерами на каждой точке данных</span>
+    <span class="n">df_grouped</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> 
+            <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> 
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Доходы и расходы по времени&quot;</span>
+        <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Дата&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Сумма&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">financial_planner_app</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Навигация</h3>
+<p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">financial_planner_app</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Код модуля</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Zvezdin Andrey.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

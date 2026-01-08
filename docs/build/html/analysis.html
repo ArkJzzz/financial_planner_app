@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html lang="ru" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>analysis module &#8212; документация financial_planner_app </title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=372fde1a"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=cd1d70c9"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="gui module" href="gui.html" />
+    <link rel="prev" title="financial_planner_app" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-analysis">
+<span id="analysis-module"></span><h1>analysis module<a class="headerlink" href="#module-analysis" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="analysis.group_by_category">
+<span class="sig-prename descclassname"><span class="pre">analysis.</span></span><span class="sig-name descname"><span class="pre">group_by_category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="_modules/analysis.html#group_by_category"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#analysis.group_by_category" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Группирует данные по категориям и вычисляет суммарный объем средств.</p>
+<p>Функция фильтрует входной DataFrame по указанному типу транзакций (доход или расход)
+и суммирует значения в столбце „amount“ для каждой уникальной категории.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Таблица данных, содержащая столбцы „transaction_type“,
+„category“ и „amount“.</p></li>
+<li><p><strong>transaction_type</strong> (<em>str</em>) – Тип операции для фильтрации (например, „expense“
+или „income“).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Объект Series, где индексами являются названия категорий,
+а значениями — общие суммы по каждой категории.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.Series</p>
+</dd>
+</dl>
+<p class="rubric">Пример</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Получение суммы расходов по категориям</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expenses_by_cat</span> <span class="o">=</span> <span class="n">group_by_category</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;expense&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expenses_by_cat</span><span class="p">[</span><span class="s1">&#39;Еда&#39;</span><span class="p">])</span>
+<span class="go">5000.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="analysis.plot_income_expence_over_time">
+<span class="sig-prename descclassname"><span class="pre">analysis.</span></span><span class="sig-name descname"><span class="pre">plot_income_expence_over_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analysis.html#plot_income_expence_over_time"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#analysis.plot_income_expence_over_time" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Визуализирует динамику доходов и расходов во времени.</p>
+<p>Функция группирует транзакции по датам и типам, вычисляет ежедневные суммы
+и строит линейный график. Позволяет наглядно сравнить притоки и оттоки
+денежных средств на временной шкале.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pd.DataFrame</em>) – Таблица данных. Должна содержать колонки „date“,
+„transaction_type“ и „amount“. Колонка „date“ должна иметь
+тип datetime64.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<ul class="simple">
+<li><p>Если в определенную дату отсутствует один из типов операций (например,
+только расходы), функция подставит 0 для корректного отображения графика.</p></li>
+<li><p>Для корректной работы функции рекомендуется предварительно обработать
+DataFrame функцией <a class="reference internal" href="#analysis.transactions_to_df" title="analysis.transactions_to_df"><code class="xref py py-func docutils literal notranslate"><span class="pre">transactions_to_df()</span></code></a>.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Функция отображает интерактивное окно с графиком через <cite>plt.show()</cite>.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – Если в DataFrame отсутствуют необходимые колонки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="analysis.plot_pie_by_category">
+<span class="sig-prename descclassname"><span class="pre">analysis.</span></span><span class="sig-name descname"><span class="pre">plot_pie_by_category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analysis.html#plot_pie_by_category"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#analysis.plot_pie_by_category" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Строит круговую диаграмму распределения финансов по категориям.</p>
+<p>Функция агрегирует данные для выбранного типа операций (доходы или расходы)
+и визуализирует процентное соотношение каждой категории в общем объеме.
+Если данные для указанного типа отсутствуют, график не строится.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Таблица данных, содержащая как минимум колонки
+„transaction_type“, „category“ и „amount“.</p></li>
+<li><p><strong>transaction_type</strong> (<em>str</em>) – Тип операций для отображения: „expense“ (расходы)
+или „income“ (доходы).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<ul class="simple">
+<li><p>Функция использует метод <cite>plt.show()</cite> для отображения графика, что
+может блокировать выполнение кода в зависимости от настроек бэкенда Matplotlib.</p></li>
+<li><p>Для корректного отображения меток категорий на русском языке убедитесь,
+что в Matplotlib настроены шрифты с поддержкой кириллицы.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Функция отображает интерактивное окно с графиком через <cite>plt.show()</cite>.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="analysis.transactions_to_df">
+<span class="sig-prename descclassname"><span class="pre">analysis.</span></span><span class="sig-name descname"><span class="pre">transactions_to_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transactions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/analysis.html#transactions_to_df"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#analysis.transactions_to_df" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Преобразует список объектов транзакций в объект pandas DataFrame.</p>
+<p>Функция собирает данные из объектов транзакций и выполняет постобработку:
+преобразует строковые даты в объекты <cite>datetime64</cite>, что позволяет в дальнейшем
+проводить временной анализ (группировку по месяцам, расчет трендов и т.д.).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>transactions</strong> (<em>list</em><em>[</em><a class="reference internal" href="models.html#models.Transaction" title="models.Transaction"><em>Transaction</em></a><em>]</em>) – Список экземпляров класса <code class="xref py py-class docutils literal notranslate"><span class="pre">Transaction</span></code>.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Таблица данных с колонками, соответствующими полям транзакции.
+Если список пуст, возвращается пустой DataFrame. Колонки результата:
+„amount“, „category“, „date“, „description“, „transaction_type“.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Столбец „date“ автоматически конвертируется в формат <code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.Timestamp</span></code>
+только в том случае, если DataFrame не пуст.</p>
+</div>
+<p class="rubric">Пример</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">transactions</span> <span class="o">=</span> <span class="p">[</span><span class="n">Transaction</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span> <span class="s2">&quot;Еда&quot;</span><span class="p">,</span> <span class="s2">&quot;2026-01-06&quot;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">transactions_to_df</span><span class="p">(</span><span class="n">transactions</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="go">datetime64[ns]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">financial_planner_app</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Навигация</h3>
+<p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">financial_planner_app</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">analysis module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#analysis.group_by_category"><code class="docutils literal notranslate"><span class="pre">group_by_category()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis.plot_income_expence_over_time"><code class="docutils literal notranslate"><span class="pre">plot_income_expence_over_time()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis.plot_pie_by_category"><code class="docutils literal notranslate"><span class="pre">plot_pie_by_category()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis.transactions_to_df"><code class="docutils literal notranslate"><span class="pre">transactions_to_df()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html">gui module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html">storage module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">financial_planner_app</a><ul>
+      <li>Previous: <a href="modules.html" title="предыдущая глава">financial_planner_app</a></li>
+      <li>Next: <a href="gui.html" title="следующая глава">gui module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Zvezdin Andrey.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/analysis.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

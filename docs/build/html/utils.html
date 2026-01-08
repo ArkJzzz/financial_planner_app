@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html lang="ru" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>utils module &#8212; документация financial_planner_app </title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=372fde1a"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=cd1d70c9"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="prev" title="storage module" href="storage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-utils">
+<span id="utils-module"></span><h1>utils module<a class="headerlink" href="#module-utils" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.validate_amount">
+<span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">validate_amount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/utils.html#validate_amount"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#utils.validate_amount" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Проверяет и преобразует строковое представление суммы в число.</p>
+<p>Функция нормализует входную строку, заменяя десятичные запятые на точки,
+проверяет соответствие формату числа и гарантирует, что значение положительно.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>amount_str</strong> (<em>str</em>) – Строка, содержащая сумму (например, «100», «100.50», «100,50»).</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Сумма в виде числа с плавающей запятой.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Если входные данные не являются строкой.</p></li>
+<li><p><strong>ValueError</strong> – Если строка пуста или содержит недопустимые символы.</p></li>
+<li><p><strong>ValueError</strong> – Если итоговое число меньше или равно нулю.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Примеры</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">validate_amount</span><span class="p">(</span><span class="s2">&quot;100,50&quot;</span><span class="p">)</span>
+<span class="go">100.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validate_amount</span><span class="p">(</span><span class="s2">&quot; 50.0 &quot;</span><span class="p">)</span>
+<span class="go">50.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.validate_category">
+<span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">validate_category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/utils.html#validate_category"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#utils.validate_category" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Проверяет корректность названия категории и очищает его.</p>
+<p>Функция гарантирует, что категория не является пустой и содержит только
+допустимые символы. Строка очищается от начальных и конечных пробелов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>category_str</strong> (<em>str</em>) – Название категории для проверки.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Очищенная строка категории (без лишних пробелов по краям).</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Если входной аргумент не является строкой.</p></li>
+<li><p><strong>ValueError</strong> – Если после удаления пробелов строка оказалась пустой.</p></li>
+<li><p><strong>ValueError</strong> – Если строка содержит спецсимволы (разрешены только буквы,
+    цифры, пробелы и дефисы).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Примеры</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">validate_category</span><span class="p">(</span><span class="s2">&quot; Продукты-2026 &quot;</span><span class="p">)</span>
+<span class="go">&#39;Продукты-2026&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validate_category</span><span class="p">(</span><span class="s2">&quot;Зарплата!&quot;</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">Категория может содержать только буквы, цифры, пробелы и дефисы</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.validate_date">
+<span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">validate_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/utils.html#validate_date"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#utils.validate_date" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Проверяет корректность строкового представления даты.</p>
+<p>Функция выполняет комплексную проверку: на соответствие типу данных,
+соблюдение формата ГГГГ-ММ-ДД и валидность самой календарной даты.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>date_str</strong> (<em>str</em>) – Строка с датой для проверки. Ожидаемый формат: „YYYY-MM-DD“.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Очищенная от пробелов строка даты, если все проверки пройдены успешно.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Если входной параметр не является строкой или строка пуста.</p></li>
+<li><p><strong>ValueError</strong> – Если строка не соответствует шаблону ГГГГ-ММ-ДД.</p></li>
+<li><p><strong>ValueError</strong> – Если указанная дата календарно не существует (например, 2026-02-30).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Примеры</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">validate_date</span><span class="p">(</span><span class="s2">&quot; 2026-01-06 &quot;</span><span class="p">)</span>
+<span class="go">&#39;2026-01-06&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validate_date</span><span class="p">(</span><span class="s2">&quot;2026-13-01&quot;</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">Дата введена некорректно или несуществующая</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">financial_planner_app</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Навигация</h3>
+<p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">financial_planner_app</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analysis.html">analysis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html">gui module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html">storage module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#utils.validate_amount"><code class="docutils literal notranslate"><span class="pre">validate_amount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utils.validate_category"><code class="docutils literal notranslate"><span class="pre">validate_category()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utils.validate_date"><code class="docutils literal notranslate"><span class="pre">validate_date()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">financial_planner_app</a><ul>
+      <li>Previous: <a href="storage.html" title="предыдущая глава">storage module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Zvezdin Andrey.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/utils.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

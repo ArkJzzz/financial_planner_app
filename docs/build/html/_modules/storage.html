@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html lang="ru" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>storage &#8212; документация financial_planner_app </title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=cd1d70c9"></script>
+    <link rel="index" title="Алфавитный указатель" href="../genindex.html" />
+    <link rel="search" title="Поиск" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Исходный код storage</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transaction</span>
+
+
+<span class="c1"># Пути к файлам с данными</span>
+<span class="n">_base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">DATA_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_base_dir</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+<span class="n">CSV_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_DIR</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;transactions.csv&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ensure_data_dir">
+<a class="viewcode-back" href="../storage.html#storage.ensure_data_dir">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ensure_data_dir</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Проверяет наличие директории для хранения данных и создает её при отсутствии.</span>
+
+<span class="sd">    Функция использует путь, указанный в глобальной переменной `DATA_DIR`. </span>
+<span class="sd">    Если целевая папка (и все промежуточные директории) отсутствует в файловой </span>
+<span class="sd">    системе, она будет создана автоматически.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Функция опирается на внешнюю константу `DATA_DIR`, которая должна быть </span>
+<span class="sd">        определена в модуле.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        OSError: Если создание директории невозможно из-за ограничений прав </span>
+<span class="sd">            доступа или системных ошибок.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">DATA_DIR</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">DATA_DIR</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_transactions">
+<a class="viewcode-back" href="../storage.html#storage.save_transactions">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_transactions</span><span class="p">(</span><span class="n">transactions</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Сохраняет список транзакций в CSV-файл.</span>
+
+<span class="sd">    Функция выполняет дозапись (append) данных в файл. </span>
+<span class="sd">    Если файл не существует, он создается вместе с заголовками столбцов. </span>
+<span class="sd">    При пустом входном списке запись не производится.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        transactions (list[Transaction]): Список объектов транзакций для сохранения.</span>
+<span class="sd">            Каждый объект должен иметь метод `to_dict()`.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        - Использует глобальную константу `CSV_FILE` для определения пути к файлу.</span>
+<span class="sd">        - Автоматически вызывает `ensure_data_dir()` перед началом записи.</span>
+<span class="sd">        - Данные сохраняются в кодировке UTF-8.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: Если возникает ошибка при открытии файла или процессе записи </span>
+<span class="sd">            (ошибка перехватывается внутри функции и выводится в консоль).</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; tx = Transaction(100.0, &quot;Еда&quot;, &quot;2026-01-06&quot;, &quot;Хлеб&quot;, &quot;expense&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; save_transactions([tx])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">transactions</span><span class="p">:</span>
+        <span class="k">return</span>  <span class="c1"># Ничего не делаем</span>
+
+    <span class="n">ensure_data_dir</span><span class="p">()</span>   <span class="c1"># Создаем папку</span>
+    <span class="n">file_exists</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">CSV_FILE</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">CSV_FILE</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;amount&#39;</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;transaction_type&#39;</span><span class="p">]</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">)</span>
+
+            <span class="c1"># Если файл новый, записываем заголовки</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">file_exists</span><span class="p">:</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">transactions</span><span class="p">:</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Ошибка при сохранении данных: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_transactions">
+<a class="viewcode-back" href="../storage.html#storage.load_transactions">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_transactions</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Загружает список транзакций из CSV-файла и преобразует их в объекты Transaction.</span>
+
+<span class="sd">    Функция считывает данные из хранилища, выполняет десериализацию каждой строки </span>
+<span class="sd">    и восстанавливает объекты класса :class:`Transaction`. Если директория данных </span>
+<span class="sd">    или сам файл отсутствуют, возвращается пустой список.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[Transaction]: Список восстановленных объектов транзакций. </span>
+<span class="sd">        В случае отсутствия файла или возникновения ошибки чтения возвращается </span>
+<span class="sd">        пустой список `[]`.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        - Опирается на глобальные константы `DATA_DIR` и `CSV_FILE`.</span>
+<span class="sd">        - Предполагает, что CSV-файл имеет корректные заголовки: </span>
+<span class="sd">          &#39;amount&#39;, &#39;category&#39;, &#39;date&#39;, &#39;description&#39;, &#39;transaction_type&#39;.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: Если возникает ошибка при чтении файла или парсинге данных </span>
+<span class="sd">            (например, поврежден формат CSV). Ошибка перехватывается, выводится </span>
+<span class="sd">            в консоль, и функция возвращает пустой список.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transactions</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">DATA_DIR</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">transactions</span>     <span class="c1"># Возвращаем пустой список, если файла нет</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">CSV_FILE</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+                <span class="c1"># Создаем объект Transaction, преобразуя данные из строк</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">Transaction</span><span class="p">(</span>
+                        <span class="n">amount</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;amount&#39;</span><span class="p">]),</span>
+                        <span class="n">category</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">],</span>
+                        <span class="n">date</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span>
+                        <span class="n">description</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                        <span class="n">transaction_type</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;transaction_type&#39;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="n">transactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Ошибка при загрузке данных: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">return</span> <span class="n">transactions</span></div>
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">financial_planner_app</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Навигация</h3>
+<p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">financial_planner_app</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Код модуля</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Zvezdin Andrey.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

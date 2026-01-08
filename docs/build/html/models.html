@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html lang="ru" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>models module &#8212; документация financial_planner_app </title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=372fde1a"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=cd1d70c9"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="storage module" href="storage.html" />
+    <link rel="prev" title="main module" href="main.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-models">
+<span id="models-module"></span><h1>models module<a class="headerlink" href="#module-models" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="models.Transaction">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.</span></span><span class="sig-name descname"><span class="pre">Transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'expense'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models.html#Transaction"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#models.Transaction" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс, представляющий отдельную финансовую операцию.</p>
+<p>Используется для учета поступлений (income) или расходов (expense)
+денежных средств с валидацией даты и очисткой строковых данных.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.Transaction.amount">
+<span class="sig-name descname"><span class="pre">amount</span></span><a class="headerlink" href="#models.Transaction.amount" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Сумма денежных средств.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.Transaction.category">
+<span class="sig-name descname"><span class="pre">category</span></span><a class="headerlink" href="#models.Transaction.category" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Категория операции (например, продукты, бензин, зарплата).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.Transaction.date">
+<span class="sig-name descname"><span class="pre">date</span></span><a class="headerlink" href="#models.Transaction.date" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Объект даты операции.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime.datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.Transaction.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#models.Transaction.description" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Дополнительное описание транзакции.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.Transaction.transaction_type">
+<span class="sig-name descname"><span class="pre">transaction_type</span></span><a class="headerlink" href="#models.Transaction.transaction_type" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Тип операции („expense“ или „income“).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="models.Transaction.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models.html#Transaction.to_dict"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#models.Transaction.to_dict" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Возвращает данные транзакции в виде словаря.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Словарь, содержащий ключи „amount“, „category“, „date“,</dt><dd><p>“description“ и „transaction_type“.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">financial_planner_app</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Навигация</h3>
+<p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">financial_planner_app</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analysis.html">analysis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html">gui module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">models module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#models.Transaction"><code class="docutils literal notranslate"><span class="pre">Transaction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#models.Transaction.amount"><code class="docutils literal notranslate"><span class="pre">Transaction.amount</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#models.Transaction.category"><code class="docutils literal notranslate"><span class="pre">Transaction.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#models.Transaction.date"><code class="docutils literal notranslate"><span class="pre">Transaction.date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#models.Transaction.description"><code class="docutils literal notranslate"><span class="pre">Transaction.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#models.Transaction.transaction_type"><code class="docutils literal notranslate"><span class="pre">Transaction.transaction_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#models.Transaction.to_dict"><code class="docutils literal notranslate"><span class="pre">Transaction.to_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html">storage module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">financial_planner_app</a><ul>
+      <li>Previous: <a href="main.html" title="предыдущая глава">main module</a></li>
+      <li>Next: <a href="storage.html" title="следующая глава">storage module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Zvezdin Andrey.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/models.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

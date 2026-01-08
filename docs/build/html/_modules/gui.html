@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html lang="ru" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gui &#8212; документация financial_planner_app </title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=cd1d70c9"></script>
+    <link rel="index" title="Алфавитный указатель" href="../genindex.html" />
+    <link rel="search" title="Поиск" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Исходный код gui</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tkinter</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tk</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tkinter</span><span class="w"> </span><span class="kn">import</span> <span class="n">ttk</span><span class="p">,</span> <span class="n">messagebox</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transaction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_transactions</span><span class="p">,</span> <span class="n">load_transactions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_amount</span><span class="p">,</span> <span class="n">validate_date</span><span class="p">,</span> <span class="n">validate_category</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">transactions_to_df</span><span class="p">,</span> <span class="n">plot_pie_by_category</span><span class="p">,</span> <span class="n">plot_income_expence_over_time</span>
+
+
+<div class="viewcode-block" id="FinancialPlannerApp">
+<a class="viewcode-back" href="../gui.html#gui.FinancialPlannerApp">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FinancialPlannerApp</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Управляющий класс графического интерфейса «Финансовый Планер».</span>
+
+<span class="sd">    Класс инкапсулирует логику визуализации данных через Tkinter, обработку </span>
+<span class="sd">    пользовательского ввода, хранение текущего состояния транзакций и вызов </span>
+<span class="sd">    функций аналитического анализа (Pandas/Matplotlib).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        root (tk.Tk): Главное окно приложения.</span>
+<span class="sd">        transactions (list[Transaction]): Список объектов транзакций, </span>
+<span class="sd">            загруженных из хранилища.</span>
+<span class="sd">        amount_var (tk.StringVar): Буфер для ввода суммы операции.</span>
+<span class="sd">        category_var (tk.StringVar): Буфер для ввода категории.</span>
+<span class="sd">        date_var (tk.StringVar): Буфер для ввода даты (формат YYYY-MM-DD).</span>
+<span class="sd">        desc_var (tk.StringVar): Буфер для ввода описания.</span>
+<span class="sd">        type_var (tk.StringVar): Переключатель типа операции (&#39;expense&#39;/&#39;income&#39;).</span>
+<span class="sd">        tree (ttk.Treeview): Виджет таблицы для отображения истории транзакций.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Инициализирует приложение, настраивает главное окно и загружает данные.</span>
+
+<span class="sd">        При создании объекта происходит автоматическая загрузка истории из </span>
+<span class="sd">        файла через :func:`load_transactions` и первичная отрисовка всех </span>
+<span class="sd">        компонентов интерфейса.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            root (tk.Tk): Корневой объект окна Tkinter, в котором будет </span>
+<span class="sd">                развернуто приложение.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Финансовый Планер&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s1">&#39;800x600&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">minsize</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+
+        <span class="c1"># Загружаем существующие операции</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transactions</span> <span class="o">=</span> <span class="n">load_transactions</span><span class="p">()</span>
+
+        <span class="c1"># Создаём виджеты</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_widgets</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_transaction_table</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FinancialPlannerApp.create_widgets">
+<a class="viewcode-back" href="../gui.html#gui.FinancialPlannerApp.create_widgets">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Создает и размещает все элементы пользовательского интерфейса.</span>
+
+<span class="sd">        Метод выполняет визуальную компоновку приложения, разделенную на три логических блока:</span>
+<span class="sd">        1. Форма ввода (LabelFrame): сбор данных о сумме, категории, дате и описании.</span>
+<span class="sd">        2. Таблица истории (Treeview): интерактивный список всех транзакций с прокруткой.</span>
+<span class="sd">        3. Панель аналитики (LabelFrame): кнопки вызова графических отчетов.</span>
+
+<span class="sd">        В процессе выполнения инициализируются связанные переменные Tkinter </span>
+<span class="sd">        (`amount_var`, `category_var` и др.), необходимые для реактивного </span>
+<span class="sd">        взаимодействия с пользователем.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Использует менеджеры геометрии `pack` для основных контейнеров </span>
+<span class="sd">            и `grid` для элементов внутри форм ввода и аналитики.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># === Верхняя панель: форма ввода ===</span>
+        <span class="n">input_frame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39; ➕ Новая операция &#39;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="n">input_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+        <span class="c1"># Сумма</span>
+        <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">input_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Сумма (RUB):&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amount_var</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
+        <span class="n">amount_entry</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">input_frame</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">amount_var</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">amount_entry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Категория</span>
+        <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">input_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Категория:&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">category_var</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
+        <span class="n">category_entry</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">input_frame</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category_var</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+        <span class="n">category_entry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Дата</span>
+        <span class="n">_timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">input_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Дата (ГГГГ-ММ-ДД):&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date_var</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">_timestamp</span><span class="p">)</span>
+        <span class="n">date_entry</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">input_frame</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">date_var</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">date_entry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="c1"># Описание</span>
+        <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">input_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Описание:&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">desc_var</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">()</span>
+        <span class="n">desc_entry</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">input_frame</span><span class="p">,</span> <span class="n">textvariable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">desc_var</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="n">desc_entry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="c1"># Тип операции</span>
+        <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">input_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Тип:&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type_var</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">StringVar</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s1">&#39;expense&#39;</span><span class="p">)</span>
+        <span class="n">expense_rb</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Radiobutton</span><span class="p">(</span><span class="n">input_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Расход&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">type_var</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;expense&#39;</span><span class="p">)</span>
+        <span class="n">income_rb</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Radiobutton</span><span class="p">(</span><span class="n">input_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Доход&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">type_var</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;income&#39;</span><span class="p">)</span>
+        <span class="n">expense_rb</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">income_rb</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="c1"># Кнопка &#39;Добавить&#39;</span>
+        <span class="n">add_btn</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">input_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39; Добавить операцию&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">add_transaction</span><span class="p">)</span>
+        <span class="n">add_btn</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="c1"># === Таблица операций ===</span>
+        <span class="n">table_frame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39; 📜 История операций &#39;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="n">table_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="c1"># Создаём Treeview (таблицу)</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;amount&#39;</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Treeview</span><span class="p">(</span><span class="n">table_frame</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;headings&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+
+        <span class="c1"># Заголовки</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Тип&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s1">&#39;amount&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Сумма (RUB)&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Категория&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Дата&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Описание&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Ширина колонок</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;amount&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+
+        <span class="c1"># Полоса прокрутки</span>
+        <span class="n">scrollbar</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Scrollbar</span><span class="p">(</span><span class="n">table_frame</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">yview</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">yscroll</span><span class="o">=</span><span class="n">scrollbar</span><span class="o">.</span><span class="n">set</span><span class="p">)</span>
+
+        <span class="c1"># Размещение</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">scrollbar</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+
+        <span class="c1"># === Нижняя панель: аналитика ===</span>
+        <span class="n">analyze_frame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">LabelFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39; 📊 Аналитика&#39;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="n">analyze_frame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+        <span class="c1"># Кнопка &#39;Расходы&#39;</span>
+        <span class="n">expense_btn</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">analyze_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39; Расходы&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">expense_dia</span><span class="p">)</span>
+        <span class="n">expense_btn</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1"># Кнопка &#39;Доходы&#39;</span>
+        <span class="n">income_btn</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">analyze_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39; Доходы&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">income_dia</span><span class="p">)</span>
+        <span class="n">income_btn</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1"># Кнопка &#39;Динамика&#39;</span>
+        <span class="n">trends_btn</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">analyze_frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39; Динамика&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cashflow_trends</span><span class="p">)</span>
+        <span class="n">trends_btn</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="FinancialPlannerApp.add_transaction">
+<a class="viewcode-back" href="../gui.html#gui.FinancialPlannerApp.add_transaction">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_transaction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Обрабатывает добавление новой транзакции через интерфейс.</span>
+
+<span class="sd">        Метод выполняет последовательность действий:</span>
+<span class="sd">        1. Извлекает значения из строковых переменных Tkinter (`StringVar`).</span>
+<span class="sd">        2. Вызывает функции внешней валидации: :func:`validate_amount`, </span>
+<span class="sd">           :func:`validate_category` и :func:`validate_date`.</span>
+<span class="sd">        3. При успешной проверке создает объект :class:`Transaction`.</span>
+<span class="sd">        4. Инициирует сохранение в CSV-файл и обновляет локальный список.</span>
+<span class="sd">        5. Перерисовывает таблицу в интерфейсе и очищает поля ввода.</span>
+
+<span class="sd">        В случае любой ошибки валидации или записи процесс прерывается, </span>
+<span class="sd">        и пользователю выводится модальное окно с описанием проблемы.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: Перехватывает все исключения (ValueError, IOError и др.), </span>
+<span class="sd">                возникающие в процессе валидации или сохранения, и отображает </span>
+<span class="sd">                их через `messagebox.showerror`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># 1. Получаем и валидируем данные</span>
+            <span class="n">amount</span> <span class="o">=</span> <span class="n">validate_amount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">amount_var</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <span class="n">category</span> <span class="o">=</span> <span class="n">validate_category</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">category_var</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">validate_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">date_var</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">desc_var</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">trans_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_var</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+            <span class="c1"># 2. Создаём объект</span>
+            <span class="n">transaction</span> <span class="o">=</span> <span class="n">Transaction</span><span class="p">(</span>
+                <span class="n">amount</span><span class="o">=</span><span class="n">amount</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span>
+                <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+                <span class="n">transaction_type</span><span class="o">=</span><span class="n">trans_type</span>
+            <span class="p">)</span>
+
+            <span class="c1"># 3. Сохраняем</span>
+            <span class="n">save_transactions</span><span class="p">([</span><span class="n">transaction</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transaction</span><span class="p">)</span>
+
+            <span class="c1"># 4. Обновляем интерфейс</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh_transaction_table</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_input_fields</span><span class="p">()</span>
+
+            <span class="n">messagebox</span><span class="o">.</span><span class="n">showinfo</span><span class="p">(</span><span class="s1">&#39;Успех&#39;</span><span class="p">,</span> <span class="s1">&#39;Операция добавлена&#39;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">messagebox</span><span class="o">.</span><span class="n">showerror</span><span class="p">(</span><span class="s1">&#39;Ошибка ввода&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Не удалось добавить операцию:</span><span class="se">\n</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FinancialPlannerApp.clear_input_fields">
+<a class="viewcode-back" href="../gui.html#gui.FinancialPlannerApp.clear_input_fields">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_input_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Сбрасывает значения в текстовых полях формы ввода.</span>
+
+<span class="sd">        Метод очищает переменные `amount_var`, `category_var` и `desc_var`, </span>
+<span class="sd">        что приводит к визуальному удалению текста из соответствующих </span>
+<span class="sd">        виджетов `ttk.Entry`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amount_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">category_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">desc_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FinancialPlannerApp.refresh_transaction_table">
+<a class="viewcode-back" href="../gui.html#gui.FinancialPlannerApp.refresh_transaction_table">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refresh_transaction_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Синхронизирует виджет таблицы с актуальным списком транзакций.</span>
+
+<span class="sd">        Метод полностью очищает текущие записи в графическом виджете `Treeview` </span>
+<span class="sd">        и заново заполняет его данными из атрибута `self.transactions`. </span>
+<span class="sd">        В процессе выполняется форматирование данных: преобразование типов </span>
+<span class="sd">        в человекочитаемый вид (например, &#39;income&#39; в &#39;Доход&#39;) и округление сумм.</span>
+
+<span class="sd">        После обновления таблицы выполняется автоматическая прокрутка к </span>
+<span class="sd">        последней (самой новой) записи.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Очищаем текущие строки</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># Добавляем все операции</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transactions</span><span class="p">:</span>
+            <span class="n">row_type</span> <span class="o">=</span> <span class="s1">&#39;Доход&#39;</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">transaction_type</span> <span class="o">==</span> <span class="s1">&#39;income&#39;</span> <span class="k">else</span> <span class="s1">&#39;Расход&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">row_type</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">t</span><span class="o">.</span><span class="n">amount</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">category</span><span class="p">,</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">date</span><span class="p">,</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">description</span>
+            <span class="p">))</span>
+
+        <span class="c1"># Скролл вниз (к новой операции)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">yview_moveto</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FinancialPlannerApp.expense_dia">
+<a class="viewcode-back" href="../gui.html#gui.FinancialPlannerApp.expense_dia">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expense_dia</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Обработчик события: генерирует и отображает круговую диаграмму расходов.</span>
+
+<span class="sd">        Метод подготавливает данные, конвертируя текущий список транзакций </span>
+<span class="sd">        в формат DataFrame, и инициирует построение графика распределения </span>
+<span class="sd">        расходов по категориям.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">transactions_to_df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transactions</span><span class="p">)</span>
+
+        <span class="c1"># Круговая диаграмма расходов</span>
+        <span class="n">plot_pie_by_category</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;expense&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FinancialPlannerApp.income_dia">
+<a class="viewcode-back" href="../gui.html#gui.FinancialPlannerApp.income_dia">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">income_dia</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Обработчик события: генерирует и отображает круговую диаграмму доходов.</span>
+
+<span class="sd">        Метод подготавливает данные, конвертируя текущий список транзакций </span>
+<span class="sd">        в формат DataFrame, и инициирует построение графика распределения </span>
+<span class="sd">        доходов по категориям.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">transactions_to_df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transactions</span><span class="p">)</span>
+
+        <span class="c1"># Круговая диаграмма доходов</span>
+        <span class="n">plot_pie_by_category</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;income&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FinancialPlannerApp.cashflow_trends">
+<a class="viewcode-back" href="../gui.html#gui.FinancialPlannerApp.cashflow_trends">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cashflow_trends</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Обработчик события: формирует и отображает график динамики денежных потоков.</span>
+
+<span class="sd">        Метод преобразует текущую историю транзакций в формат временного ряда </span>
+<span class="sd">        и визуализирует тренды доходов и расходов. Это позволяет пользователю </span>
+<span class="sd">        проанализировать финансовую активность в хронологическом порядке.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">transactions_to_df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transactions</span><span class="p">)</span>
+
+        <span class="c1"># Динамика доходов и расходов по времени</span>
+        <span class="n">plot_income_expence_over_time</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># === Точка входа для запуска GUI ===</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">FinancialPlannerApp</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">financial_planner_app</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Навигация</h3>
+<p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">financial_planner_app</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Код модуля</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Zvezdin Andrey.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

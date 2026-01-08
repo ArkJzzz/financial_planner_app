@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html lang="ru" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>README &#8212; документация financial_planner_app </title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=372fde1a"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=cd1d70c9"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="financial_planner_app" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="readme">
+<h1>README<a class="headerlink" href="#readme" title="Ссылка на этот заголовок">¶</a></h1>
+<section id="id1">
+<h2>«Финансовый Планер»<a class="headerlink" href="#id1" title="Ссылка на этот заголовок">¶</a></h2>
+<p>Приложение для учёта личных финансов.
+Предназначено для пользователя, который хочет контролировать свои доходы и расходы, анализировать финансовые привычки и планировать бюджет.</p>
+<p>Приложение позволяет:</p>
+<ul class="simple">
+<li><p>регистрировать финансовые операции (доходы и расходы);</p></li>
+<li><p>хранить данные о сумме, категории, дате и комментарии операции;</p></li>
+<li><p>просматривать и анализировать финансовые операции;</p></li>
+<li><p>импортировать и экспортировать данные в формат CSV;</p></li>
+<li><p>визуализировать финансовые данные (распределения доходов и расходов по категориям, динамика доходов и расходов во времени)</p></li>
+</ul>
+<section id="id2">
+<h3>Структура проекта:<a class="headerlink" href="#id2" title="Ссылка на этот заголовок">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">main.py</span></code> —  главный файл, с которого начинается программа</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">models.py</span></code> —  описание данных (операции, категории и т.п.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">storage.py</span></code> —  сохранение и загрузка данных</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gui.py</span></code> —  интерфейс программы</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">analysis.py</span></code> —  анализ и графики</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">utils.py</span></code> —  вспомогательные функции</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/</span></code> —  файлы с данными</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docs/</span></code> — файлы документации</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests/</span></code> — файлы тестов</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3>Примененные библиотеки<a class="headerlink" href="#id3" title="Ссылка на этот заголовок">¶</a></h3>
+<p>Базовые инструменты управления реализованы через графический интерфейс с помощью библиотеки <a class="reference external" href="https://docs.python.org/3/library/tkinter.html">tkinter</a>.</p>
+<p>Для анализа использована библиотека <a class="reference external" href="https://pandas.pydata.org">pandas</a>.</p>
+<p>Результаты анализа отображаются в виде графиков с помощью <a class="reference external" href="https://matplotlib.org">matplotlib</a>.</p>
+<p>Для проверки корректности вводимых данных (даты, суммы, текстовые поля), анализа и очистки входных строк применены <a class="reference external" href="https://docs.python.org/3/library/re.html">регулярные выражения (re)</a>.</p>
+<p>Ключевые модули (models.py и analysis.py) покрыты тестами с использованием <a class="reference external" href="https://docs.pytest.org">pytest</a>.</p>
+<p>Документация сгенерирована с помощью <a class="reference external" href="https://www.sphinx-doc.org">sphinx</a>.</p>
+</section>
+<section id="id4">
+<h3>Установка<a class="headerlink" href="#id4" title="Ссылка на этот заголовок">¶</a></h3>
+<ul class="simple">
+<li><p>Клонируйте репозиторий:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ArkJzzz/
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Установите зависимости:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3>Запуск<a class="headerlink" href="#id5" title="Ссылка на этот заголовок">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>main.py
+</pre></div>
+</div>
+<p><strong>Основное окно программы:</strong>
+<img alt="" src="_images/app_main_window.png" /></p>
+<p><strong>Визуализация распределения расходов по категориям:</strong>
+<img alt="" src="docs/source/_static/app_chart_expenses_pie.png" /></p>
+<p><strong>Визуализация распределения доходов по категориям:</strong>
+<img alt="" src="docs/source/_static/app_chart_income_pie.png" /></p>
+<p><strong>Визуализация динамики доходов и расходов во времени:</strong>
+<img alt="" src="docs/source/_static/app_chart_dynamics_time.png" /></p>
+</section>
+</section>
+</section>
+<section id="id1">
+<h1>Документация по модулям<a class="headerlink" href="#id1" title="Ссылка на этот заголовок">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">financial_planner_app</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#models.Transaction"><code class="docutils literal notranslate"><span class="pre">Transaction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.amount"><code class="docutils literal notranslate"><span class="pre">Transaction.amount</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.category"><code class="docutils literal notranslate"><span class="pre">Transaction.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.date"><code class="docutils literal notranslate"><span class="pre">Transaction.date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.description"><code class="docutils literal notranslate"><span class="pre">Transaction.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.transaction_type"><code class="docutils literal notranslate"><span class="pre">Transaction.transaction_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="models.html#models.Transaction.to_dict"><code class="docutils literal notranslate"><span class="pre">Transaction.to_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html">gui module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.root"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.transactions"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.transactions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.amount_var"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.amount_var</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.category_var"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.category_var</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.date_var"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.date_var</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.desc_var"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.desc_var</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.type_var"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.type_var</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.tree"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.tree</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.add_transaction"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.add_transaction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.cashflow_trends"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.cashflow_trends()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.clear_input_fields"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.clear_input_fields()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.create_widgets"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.create_widgets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.expense_dia"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.expense_dia()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.income_dia"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.income_dia()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gui.html#gui.FinancialPlannerApp.refresh_transaction_table"><code class="docutils literal notranslate"><span class="pre">FinancialPlannerApp.refresh_transaction_table()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html">storage module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="storage.html#storage.ensure_data_dir"><code class="docutils literal notranslate"><span class="pre">ensure_data_dir()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="storage.html#storage.load_transactions"><code class="docutils literal notranslate"><span class="pre">load_transactions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="storage.html#storage.save_transactions"><code class="docutils literal notranslate"><span class="pre">save_transactions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html">analysis module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#analysis.group_by_category"><code class="docutils literal notranslate"><span class="pre">group_by_category()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#analysis.plot_income_expence_over_time"><code class="docutils literal notranslate"><span class="pre">plot_income_expence_over_time()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#analysis.plot_pie_by_category"><code class="docutils literal notranslate"><span class="pre">plot_pie_by_category()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#analysis.transactions_to_df"><code class="docutils literal notranslate"><span class="pre">transactions_to_df()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#utils.validate_amount"><code class="docutils literal notranslate"><span class="pre">validate_amount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#utils.validate_category"><code class="docutils literal notranslate"><span class="pre">validate_category()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#utils.validate_date"><code class="docutils literal notranslate"><span class="pre">validate_date()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">financial_planner_app</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Навигация</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">financial_planner_app</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="modules.html" title="следующая глава">financial_planner_app</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Zvezdin Andrey.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

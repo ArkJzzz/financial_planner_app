@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html lang="ru" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>storage module &#8212; документация financial_planner_app </title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=372fde1a"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=cd1d70c9"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="utils module" href="utils.html" />
+    <link rel="prev" title="models module" href="models.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-storage">
+<span id="storage-module"></span><h1>storage module<a class="headerlink" href="#module-storage" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="storage.ensure_data_dir">
+<span class="sig-prename descclassname"><span class="pre">storage.</span></span><span class="sig-name descname"><span class="pre">ensure_data_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/storage.html#ensure_data_dir"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#storage.ensure_data_dir" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Проверяет наличие директории для хранения данных и создает её при отсутствии.</p>
+<p>Функция использует путь, указанный в глобальной переменной <cite>DATA_DIR</cite>.
+Если целевая папка (и все промежуточные директории) отсутствует в файловой
+системе, она будет создана автоматически.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Функция опирается на внешнюю константу <cite>DATA_DIR</cite>, которая должна быть
+определена в модуле.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>OSError</strong> – Если создание директории невозможно из-за ограничений прав
+    доступа или системных ошибок.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="storage.load_transactions">
+<span class="sig-prename descclassname"><span class="pre">storage.</span></span><span class="sig-name descname"><span class="pre">load_transactions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/storage.html#load_transactions"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#storage.load_transactions" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Загружает список транзакций из CSV-файла и преобразует их в объекты Transaction.</p>
+<p>Функция считывает данные из хранилища, выполняет десериализацию каждой строки
+и восстанавливает объекты класса <code class="xref py py-class docutils literal notranslate"><span class="pre">Transaction</span></code>. Если директория данных
+или сам файл отсутствуют, возвращается пустой список.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Список восстановленных объектов транзакций.
+В случае отсутствия файла или возникновения ошибки чтения возвращается
+пустой список <cite>[]</cite>.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="models.html#models.Transaction" title="models.Transaction">Transaction</a>]</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<ul class="simple">
+<li><p>Опирается на глобальные константы <cite>DATA_DIR</cite> и <cite>CSV_FILE</cite>.</p></li>
+<li><p>Предполагает, что CSV-файл имеет корректные заголовки:
+„amount“, „category“, „date“, „description“, „transaction_type“.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Если возникает ошибка при чтении файла или парсинге данных
+    (например, поврежден формат CSV). Ошибка перехватывается, выводится
+    в консоль, и функция возвращает пустой список.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="storage.save_transactions">
+<span class="sig-prename descclassname"><span class="pre">storage.</span></span><span class="sig-name descname"><span class="pre">save_transactions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transactions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/storage.html#save_transactions"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#storage.save_transactions" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Сохраняет список транзакций в CSV-файл.</p>
+<p>Функция выполняет дозапись (append) данных в файл.
+Если файл не существует, он создается вместе с заголовками столбцов.
+При пустом входном списке запись не производится.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>transactions</strong> (<em>list</em><em>[</em><a class="reference internal" href="models.html#models.Transaction" title="models.Transaction"><em>Transaction</em></a><em>]</em>) – Список объектов транзакций для сохранения.
+Каждый объект должен иметь метод <cite>to_dict()</cite>.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<ul class="simple">
+<li><p>Использует глобальную константу <cite>CSV_FILE</cite> для определения пути к файлу.</p></li>
+<li><p>Автоматически вызывает <cite>ensure_data_dir()</cite> перед началом записи.</p></li>
+<li><p>Данные сохраняются в кодировке UTF-8.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Если возникает ошибка при открытии файла или процессе записи
+    (ошибка перехватывается внутри функции и выводится в консоль).</p>
+</dd>
+</dl>
+<p class="rubric">Пример</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tx</span> <span class="o">=</span> <span class="n">Transaction</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span> <span class="s2">&quot;Еда&quot;</span><span class="p">,</span> <span class="s2">&quot;2026-01-06&quot;</span><span class="p">,</span> <span class="s2">&quot;Хлеб&quot;</span><span class="p">,</span> <span class="s2">&quot;expense&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">save_transactions</span><span class="p">([</span><span class="n">tx</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">financial_planner_app</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Навигация</h3>
+<p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">financial_planner_app</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analysis.html">analysis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html">gui module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">storage module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#storage.ensure_data_dir"><code class="docutils literal notranslate"><span class="pre">ensure_data_dir()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#storage.load_transactions"><code class="docutils literal notranslate"><span class="pre">load_transactions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#storage.save_transactions"><code class="docutils literal notranslate"><span class="pre">save_transactions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">financial_planner_app</a><ul>
+      <li>Previous: <a href="models.html" title="предыдущая глава">models module</a></li>
+      <li>Next: <a href="utils.html" title="следующая глава">utils module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Zvezdin Andrey.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/storage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
